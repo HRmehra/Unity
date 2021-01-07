@@ -4,9 +4,19 @@ using UnityEngine;
 
 public class player : MonoBehaviour
 {
+    private bool jumpkeywaspressed;
+    private float Horizontalinput;
+    private Rigidbody rigidbodycomponent;
+    [SerializeField] public Transform groundcheckTranform = null ;
+    [SerializeField] private LayerMask playermask;
+    private int superJumpremaining;
+    
+
     // Start is called before the first frame update
     void Start()
     {
+        rigidbodycomponent = GetComponent<Rigidbody>();
+
         
     }
 
@@ -15,12 +25,43 @@ public class player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GetComponent<Rigidbody>().AddForce(Vector3.up *5,ForceMode.VelocityChange);
+           jumpkeywaspressed = true;
         }
+
+        Horizontalinput = Input.GetAxis("Horizontal");
     }
     //called once every physx update
-    void FixedUpdate()
+    private void FixedUpdate()
     {
+        rigidbodycomponent.velocity = new Vector3(Horizontalinput , rigidbodycomponent.velocity.y , 0);
+
         
+       if (Physics.OverlapSphere(groundcheckTranform.position,0.1f, playermask).Length==0)
+       {
+           return;
+       }
+        
+        if (jumpkeywaspressed)
+        {
+            float jumpPower = 5f;
+            if(superJumpremaining >0)
+            {
+                jumpPower *= 2;
+                superJumpremaining--;
+            }
+            rigidbodycomponent.AddForce(Vector3.up *7,ForceMode.VelocityChange);
+            jumpkeywaspressed =false ;
+        }
+
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == 9)
+        {
+            Destroy(other.gameObject);
+            superJumpremaining++;
+        }
+    }
+   
 }
