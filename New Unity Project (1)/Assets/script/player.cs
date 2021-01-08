@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,13 +43,13 @@ public class player : MonoBehaviour
         
         if (jumpkeywaspressed)
         {
-            float jumpPower = 5f;
+            float jumpPower = 4f;
             if(superJumpremaining >0)
             {
                 jumpPower *= 2;
                 superJumpremaining--;
             }
-            rigidbodycomponent.AddForce(Vector3.up *7,ForceMode.VelocityChange);
+            rigidbodycomponent.AddForce(Vector3.up *jumpPower,ForceMode.VelocityChange);
             jumpkeywaspressed =false ;
         }
 
